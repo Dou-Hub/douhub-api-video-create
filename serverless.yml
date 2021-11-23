@@ -1,0 +1,27 @@
+service: ${self:custom.apiPrefix}
+
+plugins:
+  - serverless-bundle
+  - serverless-plugin-external-sns-events
+
+custom: ${file(../../../serverless.common.yml):custom}
+
+package: ${file(../../../serverless.common.yml):package}
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  memorySize: 1024 #MB
+  timeout: 10 #Seconds
+  deploymentBucket: ${self:custom.prefix}-serverless
+  role: arn:aws:iam::${self:custom.accountId}:role/${self:custom.roleName}
+  environment: ${file(../../../serverless.common.yml):environment}
+
+functions:
+  processVideo:
+    handler: index.processVideo 
+    environment:
+      PIPELINEID: ${opt:pipelineId}  
+      PRESETID: ${opt:presetId}
+    events:
+      - externalSNS: ${self:custom.prefix}-s3-video-create
