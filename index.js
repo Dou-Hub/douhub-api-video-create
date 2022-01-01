@@ -25,7 +25,7 @@ const elastictranscoder = new AWS.ElasticTranscoder();
 export const processVideo = async (event, context, callback) => {
 
     if (_.callFromAWSEvents(event)) return;
-    if (_.track) console.log(JSON.stringify(event));
+    if (_track) console.log(JSON.stringify(event));
 
     const result = await _.processSNSRecords(event.Records, async (record) => {
         try {
@@ -38,7 +38,7 @@ export const processVideo = async (event, context, callback) => {
         }
     });
 
-    if (_.track) console.log({ result });
+    if (_track) console.log({ result });
 }
 
 const processInternal = async (record) => {
@@ -53,7 +53,7 @@ const processInternal = async (record) => {
     if (!_.isNonEmptyString(process.env.PRESETID)) new Error('Preset ID was not provided.');
     if (!_.isNonEmptyString(process.env.PIPELINEID)) new Error('Pipeline ID was not provided.');
 
-    if (_.track) console.log({ fileFullName, fileFolder, fileName, fileNameBase });
+    if (_track) console.log({ fileFullName, fileFolder, fileName, fileNameBase });
 
     var params = {
         Input: { Key: fileFullName },
@@ -73,7 +73,7 @@ const processInternal = async (record) => {
 
     };
 
-    if (_.track) console.log(JSON.stringify(params));
+    if (_track) console.log(JSON.stringify(params));
 
     const data = await (() => {
         return new Promise((resolve, reject) => {
